@@ -1,2 +1,21 @@
 ---
 install_management_rools: "yes"
+content_folder: "C:\\WSUS"
+products_list:
+  - Windows Server 2012 R2
+  - Windows Server 2016
+classification_list:
+  - Critical Updates
+  - Security Updates
+
+#Applications
+#Critical Updates
+#Definition Updates
+#Drivers
+#Feature Packs
+#Security Updates
+#Service Packs
+#Tools
+#Update Rollups
+#Updates
+#Upgrades
