@@ -1,0 +1,7 @@
+---
+- name: Install WSUS Role
+  win_feature:
+      name: UpdateServices
+      state: present
+      include_management_tools: "{{ install_management_tools }}"
+      include_sub_features: "yes"
