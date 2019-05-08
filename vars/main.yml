@@ -1,2 +1,2 @@
 ---
-# vars file for wsus
+install_management_rools: "yes"
