@@ -1,0 +1,15 @@
+---
+- name: Create content folder
+  win_file:
+    path: "{{ content_folder }}"
+    state: directory
+
+- name: Set products to synchronise -> loop
+  win_shell: |
+    Get-WSUSProduct | Where-Object -FilterScript {$_.product.title -eq "{{ products_list }}" } | Set-WsusProduct
+  loop: "{{ products_list|flatten(levels=1) }}"
+
+- name: Set classifications -> loop
+  win_shell: |
+    Get-WsusClassification | Where-Object -FilterScript {$_.Classification.Title -Eq {{ classification_list }}"} | Set-WsusClassification
+  loop: "{{ classification_list|flatten(levels=1) }}"
