@@ -4,12 +4,41 @@
     path: "{{ content_folder }}"
     state: directory
 
-- name: Set products to synchronise -> loop
-  win_shell: |
-    Get-WSUSProduct | Where-Object -FilterScript {$_.product.title -eq "{{ products_list }}" } | Set-WsusProduct
-  loop: "{{ products_list|flatten(levels=1) }}"
+- name: Set content folder in WSUS
+  win_command: 'WsusUtil.exe postinstall CONTENT_DIR={{ content_folder }}'
+  args:
+      chdir: 'C:\Program Files\Update Services\Tools'
+      creates: '{{ content_folder }}\WsusContent'
 
-- name: Set classifications -> loop
+- name: Get WSUS Server Product status
   win_shell: |
-    Get-WsusClassification | Where-Object -FilterScript {$_.Classification.Title -Eq {{ classification_list }}"} | Set-WsusClassification
-  loop: "{{ classification_list|flatten(levels=1) }}"
+    (Get-WSUSProduct).count
+  register: wsus_product_list_count
+
+#- debug: msg="{{ wsus_product_list_count.stdout }}"
+
+- name: Set WSUS to synchronise from Microsoft Updats
+  win_shell: |
+    Set-WsusServerSynchronization -SyncFromMU
+
+- name: Set Updates to English Only
+  win_shell: |
+    $wsusconfig = (Get-WsusServer).GetConfiguration()
+    $wsusconfig.AllUpdateLanguagesEnabled = $false
+    $wsusconfig.SetEnabledUpdateLanguages("en")
+    $wsusconfig.Save()
+
+- name: Do initial synchronisation to get latest categories
+  win_shell: |
+    $wsussubscription = (Get-WSUSServer).GetSubscription()
+    $wsussubscription.StartSynchronizationForCategoryOnly()
+
+#- name: Set products to synchronise -> loop
+#  win_shell: |
+#    Get-WSUSProduct | Where-Object -FilterScript {$_.product.title -eq "{{ products_list }}" } | Set-WsusProduct
+#  loop: "{{ products_list|flatten(levels=1) }}"
+
+#- name: Set classifications -> loop
+#  win_shell: |
+#    Get-WsusClassification | Where-Object -FilterScript {$_.Classification.Title -Eq {{ classification_list }}"} | Set-WsusClassification
+#  loop: "{{ classification_list|flatten(levels=1) }}"
