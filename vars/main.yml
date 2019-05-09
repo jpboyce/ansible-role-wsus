@@ -1,5 +1,5 @@
 ---
-install_management_rools: "yes"
+install_management_tools: "yes"
 content_folder: "C:\\WSUS"
 products_list:
   - Windows Server 2012 R2
