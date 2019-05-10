@@ -22,13 +22,6 @@
       chdir: 'C:\Program Files\Update Services\Tools'
       creates: '{{ content_folder }}\WsusContent'
 
-- name: Get WSUS Server Product status
-  win_shell: |
-    (Get-WSUSProduct).count
-  register: wsus_product_list_count
-
-#- debug: msg="{{ wsus_product_list_count.stdout }}"
-
 - name: Set WSUS to synchronise from Microsoft Updats
   win_shell: |
     Set-WsusServerSynchronization -SyncFromMU
