@@ -4,9 +4,18 @@
     (Get-WsusServer).GetConfiguration().SyncFromMicrosoftUpdate
   register: wsus_sync_source_state_raw
 
+- name: Get All Languages Enabled State
+  win_shell: |
+    (Get-WsusServer).GetConfiguration().AllUpdateLanguagesEnabled
+  register: wsus_all_languages_enabled_raw
+
 - name: wsus_facts
   set_fact:
       wsus_sync_source_state: "{{ wsus_sync_source_state_raw.stdout | trim }}"
+      wsus_all_languages_enabled: "{{ wsus_all_languages_enabled_raw.stdout | trim }}"
+
+- debug:
+  msg: "{{wsus_all_languages_enabled}}"
 
 - debug:
     msg: "The WSUS Sync Source is: {{ wsus_sync_source_state }}"
@@ -33,6 +42,7 @@
     $wsusconfig.AllUpdateLanguagesEnabled = $false
     $wsusconfig.SetEnabledUpdateLanguages("en")
     $wsusconfig.Save()
+  when: (wsus_all_languages_enabled) == "True"
 
 - name: Do initial synchronisation to get latest categories
   win_shell: |
