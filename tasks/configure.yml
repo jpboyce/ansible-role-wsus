@@ -20,11 +20,11 @@
       wsus_all_languages_enabled: "{{ wsus_all_languages_enabled_raw.stdout | trim }}"
       wsus_last_sync_year: "{{ wsus_last_sync_year_raw | trim }}"
 
-- debug:
-  msg: "{{wsus_all_languages_enabled}}"
+#- debug:
+#  msg: "{{wsus_all_languages_enabled}}"
 
-- debug:
-    msg: "The WSUS Sync Source is: {{ wsus_sync_source_state }}"
+#- debug:
+#    msg: "The WSUS Sync Source is: {{ wsus_sync_source_state }}"
 
 - name: Create content folder
   win_file:
