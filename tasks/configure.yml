@@ -65,7 +65,11 @@
     Get-WsusClassification | Where-Object -FilterScript {$_.Classification.Title -Eq "{{ item }}"} | Set-WsusClassification
   loop: "{{ classification_list|flatten(levels=1) }}"
 
-#- name: Set products to synchronise -> loop
-#  win_shell: |
-#    Get-WSUSProduct | Where-Object -FilterScript {$_.product.title -eq "{{ products_list }}" } | Set-WsusProduct
-#  loop: "{{ products_list|flatten(levels=1) }}"
+- name: Disable All Products
+  win_shell: |
+    Get-WsusProduct | Set-WsusProduct -Disable
+
+- name: Set products to synchronise -> loop
+  win_shell: |
+    Get-WSUSProduct | Where-Object -FilterScript {$_.product.title -eq "{{ item }}" } | Set-WsusProduct
+  loop: "{{ products_list|flatten(levels=1) }}"
