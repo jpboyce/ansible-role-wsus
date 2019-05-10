@@ -1,4 +1,5 @@
 ---
+wsus_facts: "yes"
 install_management_tools: "yes"
 content_folder: "C:\\WSUS"
 products_list:

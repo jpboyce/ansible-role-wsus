@@ -2,10 +2,14 @@
 - name: Get Synchronisation Source State
   win_shell: |
     (Get-WsusServer).GetConfiguration().SyncFromMicrosoftUpdate
-  register: wsus_sync_source_state
+  register: wsus_sync_source_state_raw
+
+- name: wsus_facts
+  set_fact:
+      wsus_sync_source_state: "{{ wsus_sync_source_state_raw.stdout | trim }}"
 
 - debug:
-    msg: "The WSUS Sync Source is: {{ wsus_sync_source_state.stdout | trim }}"
+    msg: "The WSUS Sync Source is: {{ wsus_sync_source_state }}"
 
 - name: Create content folder
   win_file:
@@ -28,7 +32,7 @@
 - name: Set WSUS to synchronise from Microsoft Updats
   win_shell: |
     Set-WsusServerSynchronization -SyncFromMU
-  when:  wsus_sync_source_state.stdout | trim  == "True"
+  when:  (wsus_sync_source_state)  == "True"
 
 - name: Set Updates to English Only
   win_shell: |
