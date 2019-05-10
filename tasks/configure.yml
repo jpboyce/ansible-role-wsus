@@ -73,3 +73,11 @@
   win_shell: |
     Get-WSUSProduct | Where-Object -FilterScript {$_.product.title -eq "{{ item }}" } | Set-WsusProduct
   loop: "{{ products_list|flatten(levels=1) }}"
+
+- name: Enable Synchronisation
+  win_shell: |
+    $wsussubscription = (Get-WSUSServer).GetSubscription()
+    $wsussubscription.SynchronizeAutomatically=$true
+    $wsussubscription.SynchronizeAutomaticallyTimeOfDay= (New-TimeSpan -Hours 0)
+    $wsussubscription.NumberOfSynchronizationsPerDay=1
+    $wsussubscription.Save()
