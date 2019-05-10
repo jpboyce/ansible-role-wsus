@@ -9,10 +9,16 @@
     (Get-WsusServer).GetConfiguration().AllUpdateLanguagesEnabled
   register: wsus_all_languages_enabled_raw
 
+- name: Get Last Sync Year
+  win_shell: |
+    (Get-WsusServer).GetSubscription().LastModifiedTime.Year
+  register: wsus_last_sync_year_raw
+
 - name: wsus_facts
   set_fact:
       wsus_sync_source_state: "{{ wsus_sync_source_state_raw.stdout | trim }}"
       wsus_all_languages_enabled: "{{ wsus_all_languages_enabled_raw.stdout | trim }}"
+      wsus_last_sync_year: "{{ wsus_last_sync_year_raw | trim }}"
 
 - debug:
   msg: "{{wsus_all_languages_enabled}}"
@@ -48,6 +54,7 @@
   win_shell: |
     $wsussubscription = (Get-WSUSServer).GetSubscription()
     $wsussubscription.StartSynchronizationForCategoryOnly()
+  when: (wsus_last_sync_year) == "0001"
 
 #- name: Set products to synchronise -> loop
 #  win_shell: |
