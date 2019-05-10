@@ -81,3 +81,10 @@
     $wsussubscription.SynchronizeAutomaticallyTimeOfDay= (New-TimeSpan -Hours 0)
     $wsussubscription.NumberOfSynchronizationsPerDay=1
     $wsussubscription.Save()
+
+- name: Enable automatic approval rule
+  win_shell: |
+    $automatic_approval_rule = (Get-WsusServer).GetInstallApprovalRules() | Where {$_.Name -Eq "Default Automatic Approval Rule"}
+    $automatic_approval_rule.Enabled = $True
+    $automatic_approval_rule.Save()
+    $automatic_approval_rule.ApplyRule()
