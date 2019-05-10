@@ -56,11 +56,6 @@
     $wsussubscription.StartSynchronizationForCategoryOnly()
   when: (wsus_last_sync_year) == "0001"
 
-#- name: Set products to synchronise -> loop
-#  win_shell: |
-#    Get-WSUSProduct | Where-Object -FilterScript {$_.product.title -eq "{{ products_list }}" } | Set-WsusProduct
-#  loop: "{{ products_list|flatten(levels=1) }}"
-
 - name: Disable all classifications
   win_shell: |
     Get-WsusClassification | Set-WsusClassification -Disable
@@ -69,3 +64,8 @@
   win_shell: |
     Get-WsusClassification | Where-Object -FilterScript {$_.Classification.Title -Eq "{{ item }}"} | Set-WsusClassification
   loop: "{{ classification_list|flatten(levels=1) }}"
+
+#- name: Set products to synchronise -> loop
+#  win_shell: |
+#    Get-WSUSProduct | Where-Object -FilterScript {$_.product.title -eq "{{ products_list }}" } | Set-WsusProduct
+#  loop: "{{ products_list|flatten(levels=1) }}"
